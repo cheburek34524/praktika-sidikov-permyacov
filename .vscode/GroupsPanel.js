@@ -1,6 +1,5 @@
-const { useState } = React;
-
-function GroupsPanel({ groups, subjects, onChange }) {
+window.GroupsPanel = function GroupsPanel({ groups, subjects, onChange }) {
+  const { useState } = React;
   const [name, setName] = useState("");
   const [course, setCourse] = useState(1);
   const [students, setStudents] = useState(20);
@@ -31,16 +30,11 @@ function GroupsPanel({ groups, subjects, onChange }) {
         <div className="list-item" key={g.id}>
           <div className="grow">
             <b>{g.name}</b>
-            <small>
-              {g.course} курс · {g.students} чел. · дисциплин:{" "}
-              {subjects.filter(s => s.groupId === g.id).length}
-            </small>
+            <small>{g.course} курс · {g.students} чел. · дисциплин: {subjects.filter(s => s.groupId === g.id).length}</small>
           </div>
           <button className="danger" onClick={() => onChange(groups.filter(x => x.id !== g.id))}>×</button>
         </div>
       ))}
     </section>
   );
-}
-
-window.GroupsPanel = GroupsPanel;
+};

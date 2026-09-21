@@ -5,27 +5,28 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Server {
 
-    // Папка с index.html, style.css, script.js
     private static final Path ROOT = Paths.get("public").toAbsolutePath();
-
-    // Порт
-    private static final int PORT = 3000;
+    private static final int  PORT = 3000;
 
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.createContext("/", new StaticHandler());
-        server.setExecutor(null); // однопоточный, нам хватит
+        server.setExecutor(null);
         server.start();
 
-        System.out.println("Сервер запущен: http://localhost:" + PORT);
-        System.out.println("Отдаю файлы из: " + ROOT);
-        System.out.println("Остановить: Ctrl + C");
+        System.out.println("==============================================");
+        System.out.println("  Сервер расписания запущен");
+        System.out.println("  http://localhost:" + PORT);
+        System.out.println("  Папка статики: " + ROOT);
+        System.out.println("  Остановить: Ctrl + C");
+        System.out.println("==============================================");
     }
 
     static class StaticHandler implements HttpHandler {
@@ -36,7 +37,6 @@ public class Server {
 
             Path file = ROOT.resolve(urlPath.substring(1)).normalize();
 
-            // Защита от выхода за пределы ROOT
             if (!file.startsWith(ROOT) || !Files.exists(file) || Files.isDirectory(file)) {
                 sendText(ex, 404, "Not found: " + urlPath);
                 return;
@@ -52,7 +52,7 @@ public class Server {
         }
 
         private void sendText(HttpExchange ex, int status, String text) throws IOException {
-            byte[] data = text.getBytes("UTF-8");
+            byte[] data = text.getBytes(StandardCharsets.UTF_8);
             ex.getResponseHeaders().set("Content-Type", "text/plain; charset=utf-8");
             ex.sendResponseHeaders(status, data.length);
             try (OutputStream os = ex.getResponseBody()) {

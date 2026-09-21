@@ -1,6 +1,6 @@
-const { useState, useEffect, useMemo } = React;
+window.App = function App() {
+  const { useState, useEffect, useMemo } = React;
 
-function App() {
   const [state, setState] = useState(loadState);
   const [week, setWeek] = useState(1);
   const [modal, setModal] = useState(null);
@@ -19,21 +19,15 @@ function App() {
   const saveLesson = (form) => {
     setLessons(prev => {
       const exists = prev.some(l => l.id === form.id);
-      return exists
-        ? prev.map(l => l.id === form.id ? form : l)
-        : [...prev, { ...form, id: uid() }];
+      return exists ? prev.map(l => l.id === form.id ? form : l)
+                    : [...prev, { ...form, id: uid() }];
     });
     setModal(null);
   };
 
-  const deleteLesson = (id) => {
-    setLessons(state.lessons.filter(l => l.id !== id));
-    setModal(null);
-  };
-
-  const dropLesson = (id, week, day, slot) => {
+  const deleteLesson = (id) => { setLessons(state.lessons.filter(l => l.id !== id)); setModal(null); };
+  const dropLesson   = (id, week, day, slot) =>
     setLessons(state.lessons.map(l => l.id === id ? { ...l, week, day, slot } : l));
-  };
 
   const exportJSON = () => {
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
@@ -62,9 +56,7 @@ function App() {
         (byKey[full] = byKey[full] || []).push(l);
       });
     });
-    Object.values(byKey).forEach(arr => {
-      if (arr.length > 1) list.push(arr);
-    });
+    Object.values(byKey).forEach(arr => { if (arr.length > 1) list.push(arr); });
     return list;
   }, [state.lessons, state.subjects]);
 
@@ -128,8 +120,7 @@ function App() {
               <tr key={slot}>
                 <th style={{ textAlign: "left", fontWeight: 500 }}>{label}</th>
                 {DAYS.map((_, day) => (
-                  <LessonCell
-                    key={day}
+                  <LessonCell key={day}
                     week={week} day={day} slot={slot}
                     lessons={state.lessons}
                     subjects={state.subjects}
@@ -141,8 +132,7 @@ function App() {
                       const existing = state.lessons.find(l =>
                         l.week === cell.week && l.day === cell.day && l.slot === cell.slot);
                       setModal(existing || {
-                        id: null,
-                        week: cell.week, day: cell.day, slot: cell.slot,
+                        id: null, week: cell.week, day: cell.day, slot: cell.slot,
                         subjectId: "", teacherId: "", room: "", type: "lec"
                       });
                     }}
@@ -160,18 +150,14 @@ function App() {
       </main>
 
       {modal && (
-        <LessonModal
-          lesson={modal}
-          subjects={state.subjects}
-          teachers={state.teachers}
-          groups={state.groups}
-          onSave={saveLesson}
-          onDelete={deleteLesson}
-          onClose={() => setModal(null)}
-        />
+        <LessonModal lesson={modal}
+                     subjects={state.subjects}
+                     teachers={state.teachers}
+                     groups={state.groups}
+                     onSave={saveLesson}
+                     onDelete={deleteLesson}
+                     onClose={() => setModal(null)} />
       )}
     </div>
   );
-}
-
-window.App = App;
+};

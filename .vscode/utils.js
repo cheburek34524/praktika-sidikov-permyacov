@@ -1,6 +1,8 @@
-const uid = () => Math.random().toString(36).slice(2, 9);
+window.uid = function uid() {
+  return Math.random().toString(36).slice(2, 9);
+};
 
-function findConflicts(lessons) {
+window.findConflicts = function findConflicts(lessons) {
   const conflicts = new Set();
   for (let i = 0; i < lessons.length; i++) {
     for (let j = i + 1; j < lessons.length; j++) {
@@ -18,7 +20,4 @@ function findConflicts(lessons) {
     }
   }
   return conflicts;
-}
-
-window.uid = uid;
-window.findConflicts = findConflicts;
+};
