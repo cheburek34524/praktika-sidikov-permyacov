@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Расписание — конструктор</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Порядок важен: сначала константы и утилиты, потом компоненты, потом App и main -->
+  <script type="text/babel" src="js/constants.js"></script>
+  <script type="text/babel" src="js/storage.js"></script>
+  <script type="text/babel" src="js/utils.js"></script>
+
+  <script type="text/babel" src="js/components/GroupsPanel.jsx"></script>
+  <script type="text/babel" src="js/components/TeachersPanel.jsx"></script>
+  <script type="text/babel" src="js/components/SubjectsPanel.jsx"></script>
+  <script type="text/babel" src="js/components/LessonModal.jsx"></script>
+  <script type="text/babel" src="js/components/LessonCell.jsx"></script>
+
+  <script type="text/babel" src="js/App.jsx"></script>
+  <script type="text/babel" src="js/main.jsx"></script>
+</body>
+</html>
