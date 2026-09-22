@@ -11,8 +11,12 @@ import java.nio.file.Paths;
 
 public class Server {
 
-    private static final Path ROOT = Paths.get("public").toAbsolutePath();
-    private static final int  PORT = 3000;
+    private static final int PORT = 3000;
+
+    private static final Path[] ROOTS = {
+        Paths.get("public").toAbsolutePath().normalize(),
+        Paths.get(".").toAbsolutePath().normalize()
+    };
 
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
@@ -23,7 +27,9 @@ public class Server {
         System.out.println("==============================================");
         System.out.println("  Сервер расписания запущен");
         System.out.println("  http://localhost:" + PORT);
-        System.out.println("  Папка статики: " + ROOT);
+        for (Path root : ROOTS) {
+            System.out.println("  Ищу файлы в: " + root);
+        }
         System.out.println("  Остановить: Ctrl + C");
         System.out.println("==============================================");
     }
@@ -34,9 +40,10 @@ public class Server {
             String urlPath = ex.getRequestURI().getPath();
             if (urlPath.equals("/")) urlPath = "/index.html";
 
-            Path file = ROOT.resolve(urlPath.substring(1)).normalize();
+            String relative = urlPath.substring(1);
+            Path file = findFile(relative);
 
-            if (!file.startsWith(ROOT) || !Files.exists(file) || Files.isDirectory(file)) {
+            if (file == null) {
                 sendText(ex, 404, "Not found: " + urlPath);
                 return;
             }
@@ -48,6 +55,17 @@ public class Server {
             try (OutputStream os = ex.getResponseBody()) {
                 os.write(data);
             }
+        }
+
+        private Path findFile(String relative) {
+            for (Path root : ROOTS) {
+                Path candidate = root.resolve(relative).normalize();
+                if (!candidate.startsWith(root)) continue;
+                if (Files.exists(candidate) && !Files.isDirectory(candidate)) {
+                    return candidate;
+                }
+            }
+            return null;
         }
 
         private void sendText(HttpExchange ex, int status, String text) throws IOException {
@@ -62,13 +80,16 @@ public class Server {
         private String contentType(String name) {
             String n = name.toLowerCase();
             if (n.endsWith(".html") || n.endsWith(".htm")) return "text/html; charset=utf-8";
-            if (n.endsWith(".css"))  return "text/css; charset=utf-8";
-            if (n.endsWith(".js"))   return "application/javascript; charset=utf-8";
-            if (n.endsWith(".json")) return "application/json; charset=utf-8";
-            if (n.endsWith(".png"))  return "image/png";
+            if (n.endsWith(".css"))   return "text/css; charset=utf-8";
+            if (n.endsWith(".js"))    return "application/javascript; charset=utf-8";
+            if (n.endsWith(".json"))  return "application/json; charset=utf-8";
+            if (n.endsWith(".png"))   return "image/png";
             if (n.endsWith(".jpg") || n.endsWith(".jpeg")) return "image/jpeg";
-            if (n.endsWith(".svg"))  return "image/svg+xml";
-            if (n.endsWith(".ico"))  return "image/x-icon";
+            if (n.endsWith(".svg"))   return "image/svg+xml";
+            if (n.endsWith(".ico"))   return "image/x-icon";
+            if (n.endsWith(".woff"))  return "font/woff";
+            if (n.endsWith(".woff2")) return "font/woff2";
+            if (n.endsWith(".ttf"))   return "font/ttf";
             return "application/octet-stream";
         }
     }

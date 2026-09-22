@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Расписание</title>
+
+  <!-- Стили -->
+  <link rel="stylesheet" href="tema.css">
+
+  <!-- Антимерцание темы: до отрисовки -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('app-theme');
+        var isDark = saved === 'dark' ||
+          (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React и ReactDOM (UMD) -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel для транспиляции JSX в браузере -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Базовые модули -->
+  <script src="constants.js"></script>
+  <script src="utils.js"></script>
+  <script src="storage.js"></script>
+
+  <!-- Тема -->
+  <script src="tema.js"></script>
+
+  <!-- React-компоненты (type="text/babel" — обязательно!) -->
+  <script type="text/babel" src="GroupsPanel.js"></script>
+  <script type="text/babel" src="TeachersPanel.js"></script>
+  <script type="text/babel" src="SubjectsPanel.js"></script>
+  <script type="text/babel" src="LessonCell.js"></script>
+  <script type="text/babel" src="LessonModal.js"></script>
+
+  <!-- Точка входа -->
+  <script type="text/babel" src="main.js"></script>
+</body>
+</html>
