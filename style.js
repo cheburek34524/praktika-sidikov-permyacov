@@ -1,3 +1,4 @@
+const css = `
 * { box-sizing: border-box; }
 body {
   margin: 0;
@@ -81,3 +82,9 @@ td.cell.drag-over { background: #e7efff; outline: 2px dashed #3b6cf0; }
   .print-title { display: block; text-align: center; margin: 0 0 8px; font-size: 16px; }
   td.cell { height: auto; min-height: 60px; }
 }
+`;
+
+// Создаём тег <style> и вставляем в <head>
+const styleEl = document.createElement('style');
+styleEl.textContent = css;
+document.head.appendChild(styleEl);
